@@ -1,0 +1,519 @@
+:root {
+  color-scheme: light;
+  --bg: #f6f6f3;
+  --surface: #fcfcfb;
+  --text: #0b0b0b;
+  --text-2: #52514e;
+  --muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.1);
+  --border-strong: rgba(11, 11, 11, 0.2);
+  --chip: #ecebe6;
+  --actual: #2a78d6;
+  --forecast: #eb6834;
+  --mae: #6250d6;
+  --bias: #008300;
+  --critical: #d03b3b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #0d0d0d;
+    --surface: #1a1a19;
+    --text: #f0efec;
+    --text-2: #c3c2b7;
+    --muted: #898781;
+    --grid: #2c2c2a;
+    --axis: #383835;
+    --border: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.2);
+    --chip: #262624;
+    --actual: #3987e5;
+    --forecast: #d95926;
+    --mae: #9085e9;
+    --bias: #008300;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.45 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2 {
+  margin: 0;
+}
+
+h1 {
+  font-size: 22px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.app {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px 16px 32px;
+}
+
+.muted {
+  color: var(--text-2);
+  font-size: 13px;
+  margin: 4px 0 0;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tabs {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--chip);
+}
+
+.tabs a {
+  padding: 7px 14px;
+  border-radius: 8px;
+  color: var(--text-2);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.tabs a[aria-current='page'] {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+/* controls */
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px 20px;
+  margin-bottom: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  color: var(--text-2);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.field label strong {
+  color: var(--text);
+  margin-left: 4px;
+}
+
+input[type='date'],
+input[type='time'] {
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+}
+
+.inline,
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.stepper button {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.stepper button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.chip {
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-2);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.chip:hover {
+  background: var(--chip);
+}
+
+.chip.selected {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--surface);
+}
+
+.horizon input[type='range'] {
+  width: min(280px, 80vw);
+  height: 36px;
+  margin: 0;
+  accent-color: var(--text);
+}
+
+.notice {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--critical);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 14px;
+}
+
+.stale {
+  opacity: 0.55;
+  transition: opacity 0.15s;
+}
+
+/* tiles and cards */
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.tile,
+.card,
+.runs {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.tile {
+  padding: 14px 16px;
+}
+
+.tile-label {
+  color: var(--text-2);
+  font-size: 12.5px;
+}
+
+.tile-value {
+  margin: 4px 0 2px;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.tile-note {
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.card {
+  padding: 18px 18px 14px;
+  margin-bottom: 16px;
+}
+
+.card-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px 16px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.grid-2 .card {
+  margin-bottom: 0;
+}
+
+.unit {
+  margin: 12px 0 2px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.caption {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.axis-caption {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 11.5px;
+  text-align: center;
+}
+
+.track-record p {
+  margin: 6px 0 0;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+.track-record strong {
+  color: var(--text);
+}
+
+/* legend and tooltip */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-2);
+  font-size: 12.5px;
+}
+
+.legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.key {
+  display: inline-block;
+  flex: none;
+  width: 14px;
+}
+
+.key-line {
+  height: 3px;
+  border-radius: 2px;
+}
+
+.key-band {
+  height: 10px;
+  border-radius: 3px;
+  opacity: 0.3;
+}
+
+.key-bar {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.tooltip {
+  min-width: 190px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  font-size: 12.5px;
+}
+
+.tooltip-title {
+  margin-bottom: 6px;
+  color: var(--text-2);
+}
+
+.tooltip-row {
+  display: grid;
+  grid-template-columns: 14px auto 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 1px 0;
+}
+
+.tooltip-row strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.tooltip-row span:last-child {
+  color: var(--text-2);
+}
+
+.recharts-wrapper :focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* forecast runs */
+
+.runs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px 24px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+}
+
+.run-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.run {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 58px;
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.run span {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.run small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.run.used {
+  border-color: var(--forecast);
+  background: color-mix(in srgb, var(--forecast) 12%, var(--surface));
+}
+
+.run.late {
+  opacity: 0.45;
+}
+
+.decision-marker {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  border-left: 2px solid var(--text);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* hourly table */
+
+.table-toggle summary {
+  margin-top: 10px;
+  color: var(--text-2);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.table-wrap {
+  max-height: 360px;
+  margin-top: 8px;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+th,
+td {
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--grid);
+  text-align: right;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  color: var(--muted);
+  font-weight: 500;
+}
+
+th:first-child,
+td:first-child {
+  text-align: left;
+}
+
+footer {
+  margin-top: 28px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 860px) {
+  .tiles {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .tabs {
+    width: 100%;
+  }
+
+  .tabs a {
+    flex: 1;
+    text-align: center;
+  }
+
+  .tile-value {
+    font-size: 20px;
+  }
+}
