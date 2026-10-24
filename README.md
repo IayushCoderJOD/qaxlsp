@@ -2,7 +2,7 @@
 
 ## Live app
 
-Not deployed yet. Add the Vercel link here.
+https://wind-forecast-monitor-pi.vercel.app
 
 ## Files and directories
 
